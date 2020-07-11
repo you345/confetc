@@ -1,0 +1,20 @@
+FROM centos:7
+MAINTAINER hasegit
+RUN yum -y install samba
+RUN yum -y install ed
+RUN useradd -m -d /chamba chamba
+RUN echo -e 'chamba\nchamba' | pdbedit -a -u chamba
+RUN echo -e '\
+/workgroup\n\
+s/SAMBA/WORKGROUP\n\
+$\n\
+a\n\
+[share]\n\
+    path = /share\n\
+    read only = no\n\
+    guest ok = no\n\
+    valid users = chamba\n\
+.\n\
+w\n\
+q\n' | ed /etc/samba/smb.conf
+CMD [ "bash", "-c", "nmbd -D && smbd -F </dev/null" ]

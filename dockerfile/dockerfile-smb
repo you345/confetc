@@ -1,9 +1,20 @@
+## operation on raspberry pi
+# curl -sSL https://get.docker.com | sh
+# sudo gpasswd -a pi docker
+# sudo mkdir /share
+#
+# docker build -t samba .
+# docker images
+# docker run -d -p 139:139 -p 445:445 -v /share:/share samba
+### 
+# smbuser: samba
+# smbuserpw: password
+###
 FROM centos:7
-MAINTAINER hasegit
-RUN yum -y install samba
-RUN yum -y install ed
-RUN useradd -m -d /chamba chamba
-RUN echo -e 'chamba\nchamba' | pdbedit -a -u chamba
+MAINTAINER you345
+RUN yum -y install samba ed
+RUN useradd -m -d /samba samba
+RUN echo -e 'password\npassword' | pdbedit -a -u samba
 RUN echo -e '\
 /workgroup\n\
 s/SAMBA/WORKGROUP\n\
@@ -13,7 +24,7 @@ a\n\
     path = /share\n\
     read only = no\n\
     guest ok = no\n\
-    valid users = chamba\n\
+    valid users = samba\n\
 .\n\
 w\n\
 q\n' | ed /etc/samba/smb.conf
